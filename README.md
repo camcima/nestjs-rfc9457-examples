@@ -24,7 +24,22 @@ Full-featured setup demonstrating:
 - **Tier 2 validation** — structured errors with `property`, `constraints`, and nested `children`
 - **`ProblemDetailsFactory` direct usage** — injecting the factory for manual problem details construction
 
-## Quick Start
+## Demo Scripts
+
+Run the automated demo scripts to see all features in action. Each script starts the app, runs curl commands, and displays the RFC 9457 responses:
+
+```bash
+# Run both demos
+./scripts/demo-all.sh
+
+# Or run individually
+./scripts/demo-basic.sh      # Basic features on port 3000
+./scripts/demo-advanced.sh   # Advanced features on port 3001
+```
+
+The scripts handle installation, building, starting the app, and cleanup automatically.
+
+## Manual Quick Start
 
 ```bash
 # Basic example
