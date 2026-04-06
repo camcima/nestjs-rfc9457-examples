@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="$SCRIPT_DIR/../advanced-example"
-PORT=3001
+PORT=3459
 BASE="http://localhost:$PORT"
 
 # Colors
@@ -52,7 +52,9 @@ header "FEATURE: exceptionMapper with Extension Members"
 
 subheader "POST /orders — OrderConflictException mapped with extra fields"
 echo "Notice: conflictingOrderId and existingOrderUrl are extension members"
-curl -s -X POST "$BASE/orders" | jq .
+curl -s -X POST "$BASE/orders" \
+  -H "Content-Type: application/json" \
+  -d '{"productId": "PROD-1", "quantity": 2, "shippingAddress": {"street": "123 Main St", "city": "Springfield", "zip": "62704"}}' | jq .
 
 # ─────────────────────────────────────────────────────
 header "FEATURE: catchAllExceptions + exceptionMapper"

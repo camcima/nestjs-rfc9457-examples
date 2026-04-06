@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="$SCRIPT_DIR/../basic-example"
-PORT=3000
+PORT=3457
 BASE="http://localhost:$PORT"
 
 # Colors

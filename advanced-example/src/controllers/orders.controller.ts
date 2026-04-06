@@ -11,7 +11,7 @@ import { OrderConflictException } from '../exceptions/order-conflict.exception';
 @Controller('orders')
 export class OrdersController {
   @Post()
-  createOrder(@Body() _dto: CreateOrderDto) {
+  createOrder() {
     // Simulate a conflict with an already-existing order
     throw new OrderConflictException('ord-abc-123', 'https://api.example.com/orders/ord-abc-123');
   }
