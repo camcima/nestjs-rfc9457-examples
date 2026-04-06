@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { DiscoveryModule } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
   Rfc9457Module,
@@ -13,6 +14,7 @@ import { ManualController } from './controllers/manual.controller';
 
 @Module({
   imports: [
+    DiscoveryModule,
     ConfigModule.forRoot(),
     Rfc9457Module.forRootAsync({
       imports: [ConfigModule],

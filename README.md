@@ -11,6 +11,7 @@ Zero-config setup demonstrating:
 - **Default behavior** — `about:blank` type, HTTP reason phrase as title, boilerplate detail suppression
 - **`@ProblemType()` decorator** — custom exception classes with problem type URIs
 - **Tier 1 validation** — automatic mapping of NestJS `ValidationPipe` errors to flat error arrays
+- **Swagger integration** — `applyProblemDetailResponses()` auto-applies `ProblemDetailDto` error schemas to all routes under `application/problem+json`
 
 ### [advanced-example/](./advanced-example/)
 
@@ -23,6 +24,7 @@ Full-featured setup demonstrating:
 - **`exceptionMapper`** — custom mapping with extension members (`retryAfter`, `conflictingOrderId`)
 - **Tier 2 validation** — structured errors with `property`, `constraints`, and nested `children`
 - **`ProblemDetailsFactory` direct usage** — injecting the factory for manual problem details construction
+- **Swagger integration** — auto-applied error schemas with `validationStatuses: [400]` for Tier 2 validation, custom extension DTOs (`OrderConflictProblemDto`, `ServiceUnavailableProblemDto`), and per-route `@ApiResponse` overrides
 
 ## Demo Scripts
 
@@ -33,8 +35,8 @@ Run the automated demo scripts to see all features in action. Each script starts
 ./scripts/demo-all.sh
 
 # Or run individually
-./scripts/demo-basic.sh      # Basic features on port 3000
-./scripts/demo-advanced.sh   # Advanced features on port 3001
+./scripts/demo-basic.sh      # Basic features on port 3457
+./scripts/demo-advanced.sh   # Advanced features on port 3459
 ```
 
 The scripts handle installation, building, starting the app, and cleanup automatically.
@@ -46,13 +48,13 @@ The scripts handle installation, building, starting the app, and cleanup automat
 cd basic-example
 npm install
 npm start
-# Visit http://localhost:3000
+# Visit http://localhost:3000 (API) and http://localhost:3000/api (Swagger UI)
 
 # Advanced example
 cd advanced-example
 npm install
 npm start
-# Visit http://localhost:3001
+# Visit http://localhost:3000 (API) and http://localhost:3000/api (Swagger UI)
 ```
 
 See each example's README for detailed curl commands and expected responses.

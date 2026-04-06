@@ -74,4 +74,16 @@ curl -s -X POST "$BASE/users" \
   -H "Content-Type: application/json" \
   -d '{"name": "Alice", "email": "alice@example.com", "age": 30}' | jq .
 
+# ─────────────────────────────────────────────────────
+header "FEATURE: Swagger / OpenAPI Integration"
+# ─────────────────────────────────────────────────────
+
+subheader "Swagger UI is available at $BASE/api"
+echo "The OpenAPI spec is auto-generated with RFC 9457 error schemas."
+echo "All error responses are documented under application/problem+json."
+
+subheader "GET /api-json — OpenAPI spec (error schemas excerpt)"
+echo "ProblemDetailDto schema:"
+curl -s "$BASE/api-json" | jq '.components.schemas.ProblemDetailDto'
+
 echo -e "\n${GREEN}Demo complete!${NC}"

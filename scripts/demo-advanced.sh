@@ -97,4 +97,23 @@ echo "This provides unique correlation IDs for log lookups."
 echo "Run any request again to see a different UUID each time:"
 curl -s "$BASE/orders/999" | jq '.instance'
 
+# ─────────────────────────────────────────────────────
+header "FEATURE: Swagger / OpenAPI Integration"
+# ─────────────────────────────────────────────────────
+
+subheader "Swagger UI is available at $BASE/api"
+echo "The OpenAPI spec includes auto-applied error schemas and custom extension DTOs."
+
+subheader "GET /api-json — Custom extension DTO schemas"
+echo "OrderConflictProblemDto (extends ProblemDetailDto with conflictingOrderId, existingOrderUrl):"
+curl -s "$BASE/api-json" | jq '.components.schemas.OrderConflictProblemDto'
+
+echo ""
+echo "ServiceUnavailableProblemDto (extends ProblemDetailDto with retryAfter):"
+curl -s "$BASE/api-json" | jq '.components.schemas.ServiceUnavailableProblemDto'
+
+subheader "GET /api-json — Tier 2 validation schema"
+echo "ValidationProblemDetailDto (extends ProblemDetailDto with errors array):"
+curl -s "$BASE/api-json" | jq '.components.schemas.ValidationProblemDetailDto'
+
 echo -e "\n${GREEN}Demo complete!${NC}"
