@@ -21,6 +21,7 @@ Full-featured setup demonstrating:
 - **`typeBaseUri`** — auto-generated type URIs (e.g., `https://api.example.com/problems/not-found`)
 - **`instanceStrategy: 'uuid'`** — correlation IDs on every error response
 - **`catchAllExceptions`** — non-`HttpException` errors become generic 500 problem details
+- **`onUnhandled`** — redirect unmapped exception logging to a custom sink (Sentry/Datadog pattern)
 - **`exceptionMapper`** — custom mapping with extension members (`retryAfter`, `conflictingOrderId`)
 - **Tier 2 validation** — structured errors with `property`, `constraints`, and nested `children`
 - **`ProblemDetailsFactory` direct usage** — injecting the factory for manual problem details construction

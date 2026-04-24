@@ -12,6 +12,7 @@ endpoint.
 | `typeBaseUri` — type URIs from HTTP status slugs | all error responses |
 | `instanceStrategy: 'uuid'` — `urn:uuid:…` correlation IDs | all error responses |
 | `catchAllExceptions` — intercepts plain `Error` objects | `GET /health/db`, `GET /health/crash` |
+| `onUnhandled` — redirect unhandled exceptions to a custom sink | `GET /health/crash` (see `src/app.module.ts`) |
 | `exceptionMapper` — map domain exceptions + add extension members | `GET /health/db`, `POST /orders` |
 | Tier 2 validation with nested `children` | `POST /orders/validate` |
 | `ProblemDetailsFactory` injected directly | `GET /manual/build` |
@@ -98,7 +99,7 @@ Expected response (`503`):
 
 ---
 
-### 3. `catchAllExceptions` — unmapped raw Error → generic 500 (no detail leak)
+### 3. `catchAllExceptions` — unmapped raw Error → generic 500 (no detail leak) + `onUnhandled` observability
 
 #### GET /health/crash — raw Error, mapper returns null
 
@@ -120,6 +121,25 @@ Expected response (`500`):
   "instance": "urn:uuid:3f2504e0-4f89-11d3-9a0c-0305e82c3301"
 }
 ```
+
+**Observability via `onUnhandled`.** The response body is intentionally bland, but
+the exception must not be silently swallowed. The library logs every unmapped
+non-`HttpException` that reaches the catch-all branch. By default that log is
+emitted at `error` level via NestJS's built-in `Logger` with context
+`Rfc9457ExceptionFilter`. This example replaces that default by passing
+`onUnhandled` in `src/app.module.ts`, which forwards to a dedicated
+`UnhandledExceptionSink` logger (stand-in for Sentry / Datadog in a real app).
+When you hit `GET /health/crash`, watch the server's stderr — you'll see:
+
+```
+[Nest] … ERROR [UnhandledExceptionSink] Unhandled exception on GET /health/crash: Unexpected failure
+Error: Unexpected failure
+    at HealthController.crash (…/health.controller.ts:…)
+```
+
+`onUnhandled` never changes the HTTP response — it exists purely for
+observability. Omit it and the library falls back to the default
+`Rfc9457ExceptionFilter` logger.
 
 ---
 

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
@@ -11,6 +11,10 @@ import { OrderConflictException } from './exceptions/order-conflict.exception';
 import { HealthController } from './controllers/health.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { ManualController } from './controllers/manual.controller';
+
+// Dedicated logger context so unhandled exceptions can be filtered or
+// redirected to a dedicated sink (Sentry, Datadog, etc.) in a real app.
+const unhandledLogger = new Logger('UnhandledExceptionSink');
 
 @Module({
   imports: [
@@ -25,6 +29,21 @@ import { ManualController } from './controllers/manual.controller';
         ),
         instanceStrategy: 'uuid' as const,
         catchAllExceptions: true,
+        // When catchAllExceptions is true and no exceptionMapper claims the
+        // throwable, the library would normally log it at error level via its
+        // built-in Logger (context `Rfc9457ExceptionFilter`). Providing
+        // onUnhandled replaces that default with a custom sink. Production
+        // apps typically forward to Sentry / Datadog here — in this example we
+        // just log with a distinct context so it's easy to spot in stderr.
+        // The filter still sends the generic 500 Problem Details response.
+        onUnhandled: (exception: unknown, request: Rfc9457Request): void => {
+          const summary = exception instanceof Error ? exception.message : String(exception);
+          const stack = exception instanceof Error ? exception.stack : undefined;
+          unhandledLogger.error(
+            `Unhandled exception on ${request.method} ${request.url}: ${summary}`,
+            stack,
+          );
+        },
         exceptionMapper: (
           exception: unknown,
           _request: Rfc9457Request,
